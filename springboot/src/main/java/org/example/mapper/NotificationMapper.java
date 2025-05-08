@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Update;
 import org.example.entity.Notification;
 
 import java.util.List;
+import java.util.Map;
 
 public interface NotificationMapper {
     
@@ -45,4 +46,16 @@ public interface NotificationMapper {
     
     @Select("SELECT COUNT(*) FROM notification WHERE receiver_id=#{receiverId} AND is_read=0")
     Integer countUnreadByReceiverId(Integer receiverId);
+    
+    @Select("SELECT MIN(id) as id, title, content, type, activity_id, activity_name, creator_id, creator_name, create_time " +
+            "FROM notification WHERE creator_id=#{creatorId} " +
+            "GROUP BY title, content, type, activity_id, activity_name, creator_id, creator_name, create_time " +
+            "ORDER BY create_time DESC")
+    List<Notification> selectDistinctByCreatorId(Integer creatorId);
+    
+    @Select("SELECT receiver_id, receiver_name FROM notification WHERE title=#{title} AND content=#{content} AND activity_id=#{activityId} AND creator_id=#{creatorId}")
+    List<Map<String, Object>> selectReceiversForNotification(String title, String content, Integer activityId, Integer creatorId);
+    
+    @Update("UPDATE notification SET title=#{title}, content=#{content}, type=#{type} WHERE id=#{id}")
+    void update(Notification notification);
 } 

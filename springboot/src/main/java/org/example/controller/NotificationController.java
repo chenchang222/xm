@@ -103,4 +103,23 @@ public class NotificationController {
         PageInfo<Notification> pageInfo = notificationService.selectPage(notification, pageNum, pageSize);
         return Result.success(pageInfo);
     }
+    
+    @GetMapping("/sentByMe/{creatorId}")
+    public Result sentByMe(@PathVariable Integer creatorId) {
+        List<Notification> list = notificationService.selectDistinctByCreatorId(creatorId);
+        return Result.success(list);
+    }
+    
+    @GetMapping("/receivers")
+    public Result receivers(@RequestParam String title, @RequestParam String content, @RequestParam Integer activityId, @RequestParam Integer creatorId) {
+        List<Map<String, Object>> receivers = notificationService.selectReceiversForNotification(title, content, activityId, creatorId);
+        return Result.success(receivers);
+    }
+    
+    @PutMapping("/update/{id}")
+    public Result update(@PathVariable Integer id, @RequestBody Notification notification) {
+        notification.setId(id);
+        notificationService.update(notification);
+        return Result.success();
+    }
 } 

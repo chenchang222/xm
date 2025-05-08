@@ -24,10 +24,12 @@
       <el-table-column prop="startTime" label="开始时间" width="180"></el-table-column>
       <el-table-column prop="endTime" label="结束时间" width="180"></el-table-column>
       <el-table-column prop="status" label="状态" width="100"></el-table-column>
-      <el-table-column label="操作" width="180">
+      <el-table-column label="操作" width="220">
         <template #default="scope">
-          <el-button type="primary" size="small" @click="handleSelectActivity(scope.row)">发送提醒</el-button>
-          <el-button type="info" size="small" @click="handleViewParticipants(scope.row)">查看参与者</el-button>
+          <div style="display: flex; gap: 10px;">
+            <el-button type="info" size="small" style="width: 100px;" @click="handleViewParticipants(scope.row)">查看参与者</el-button>
+            <el-button type="primary" size="small" style="width: 100px;" @click="handleSelectActivity(scope.row)">发送提醒</el-button>
+          </div>
         </template>
       </el-table-column>
     </el-table>

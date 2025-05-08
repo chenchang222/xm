@@ -49,6 +49,18 @@
                 <el-tag size="small" :type="getTagType(item.type)">{{ item.type }}</el-tag>
                 <el-button 
                   v-if="userInfo.role === 'EMP'"
+                  type="primary" 
+                  size="small" 
+                  @click.stop="handleViewReceivers(item)"
+                >查看接收者</el-button>
+                <el-button 
+                  v-if="userInfo.role === 'EMP'"
+                  type="warning" 
+                  size="small" 
+                  @click.stop="handleEditNotification(item)"
+                >编辑</el-button>
+                <el-button 
+                  v-if="userInfo.role === 'EMP'"
                   type="danger" 
                   size="small" 
                   @click.stop="handleDeleteNotification(item.id)"
@@ -59,7 +71,6 @@
             <div class="message-footer">
               <span>{{ formatDateTime(item.createTime) }}</span>
               <span>活动: {{ item.activityName }}</span>
-              <span v-if="userInfo.role === 'EMP'">接收者: {{ item.receiverName || '未知' }}</span>
             </div>
           </div>
         </div>
@@ -103,6 +114,60 @@
         </div>
       </div>
     </el-dialog>
+    
+    <!-- 查看接收者对话框 -->
+    <el-dialog
+      v-model="receiversDialogVisible"
+      title="通知接收者"
+      width="650px"
+    >
+      <div class="receivers-detail">
+        <h2 class="receivers-title">{{ selectedNotification.title }}</h2>
+        <div class="receivers-meta">
+          <span>活动: {{ selectedNotification.activityName }}</span>
+        </div>
+        <div class="receivers-list">
+          <div v-for="receiver in receivers" :key="receiver.receiver_id" class="receiver-item">
+            {{ receiver.receiver_name }}
+          </div>
+        </div>
+      </div>
+    </el-dialog>
+    
+    <!-- 编辑通知对话框 -->
+    <el-dialog
+      v-model="editDialogVisible"
+      title="编辑活动提醒"
+      width="650px"
+    >
+      <el-form
+        ref="editFormRef"
+        :model="editForm"
+        :rules="rules"
+        label-width="100px"
+        style="margin-top: 15px;"
+      >
+        <el-form-item label="通知标题" prop="title">
+          <el-input v-model="editForm.title" placeholder="请输入通知标题"></el-input>
+        </el-form-item>
+        <el-form-item label="通知类型" prop="type">
+          <el-select v-model="editForm.type" placeholder="请选择通知类型" style="width: 100%">
+            <el-option label="信息变更" value="信息变更"></el-option>
+            <el-option label="注意事项" value="注意事项"></el-option>
+            <el-option label="开始提醒" value="开始提醒"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="通知内容" prop="content">
+          <el-input v-model="editForm.content" type="textarea" :rows="8" placeholder="请输入通知内容"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="editDialogVisible = false">取消</el-button>
+          <el-button type="primary" @click="submitEditForm">保存</el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -134,6 +199,20 @@ const selectedNotification = reactive({
   createTime: '',
   isRead: false
 });
+const receiversDialogVisible = ref(false);
+const receivers = ref([]);
+const editDialogVisible = ref(false);
+const editFormRef = ref(null);
+const editForm = reactive({
+  id: null,
+  title: '',
+  content: '',
+  type: '',
+  activityId: null,
+  activityName: '',
+  creatorId: null,
+  creatorName: ''
+});
 
 // 获取用户信息
 const userInfo = JSON.parse(localStorage.getItem('xm-user')) || {};
@@ -160,15 +239,10 @@ const loadNotifications = async () => {
   try {
     let res;
     if (userInfo.role === 'EMP') {
-      // 管理员查看所有通知，使用分页接口，不加过滤条件即可获取所有通知
-      res = await request.get('/notification/selectPage', {
-        params: {
-          pageNum: 1,
-          pageSize: 100 // 设置较大值以获取更多通知
-        }
-      });
+      // 管理员只查看自己发送的通知
+      res = await request.get(`/notification/sentByMe/${userInfo.id}`);
       if (res.code === '200') {
-        notifications.value = res.data.list || [];
+        notifications.value = res.data || [];
       }
     } else {
       // 志愿者只查看自己的通知
@@ -216,6 +290,31 @@ const handleViewNotification = async (notification) => {
     } catch (error) {
       console.error('标记已读错误', error);
     }
+  }
+};
+
+// 查看接收者
+const handleViewReceivers = async (notification) => {
+  Object.assign(selectedNotification, notification);
+  receiversDialogVisible.value = true;
+  
+  try {
+    const res = await request.get('/notification/receivers', {
+      params: {
+        title: notification.title,
+        content: notification.content,
+        activityId: notification.activityId,
+        creatorId: notification.creatorId
+      }
+    });
+    if (res.code === '200') {
+      receivers.value = res.data || [];
+    } else {
+      ElMessage.error(res.message || '加载接收者失败');
+    }
+  } catch (error) {
+    console.error('加载接收者错误', error);
+    ElMessage.error('加载接收者出错');
   }
 };
 
@@ -302,6 +401,36 @@ const formatDateTime = (dateTime) => {
   return date.toLocaleString();
 };
 
+// 编辑通知
+const handleEditNotification = (notification) => {
+  Object.assign(editForm, notification);
+  editDialogVisible.value = true;
+};
+
+// 提交编辑表单
+const submitEditForm = async () => {
+  if (!editFormRef.value) return;
+  
+  await editFormRef.value.validate(async (valid) => {
+    if (valid) {
+      try {
+        const res = await request.put(`/notification/update/${editForm.id}`, editForm);
+        
+        if (res.code === '200') {
+          ElMessage.success('通知更新成功');
+          editDialogVisible.value = false;
+          loadNotifications();
+        } else {
+          ElMessage.error(res.message || '更新失败');
+        }
+      } catch (error) {
+        console.error('更新通知出错', error);
+        ElMessage.error('更新通知出错');
+      }
+    }
+  });
+};
+
 onMounted(() => {
   loadAnnouncements();
 });
@@ -385,5 +514,34 @@ onMounted(() => {
 .announcement-content, .notification-content {
   line-height: 1.6;
   white-space: pre-wrap;
+}
+
+.receivers-detail {
+  padding: 10px;
+}
+.receivers-title {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+}
+.receivers-meta {
+  display: flex;
+  justify-content: space-between;
+  color: #666;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+.receivers-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.receiver-item {
+  background-color: #f0f9eb;
+  padding: 5px 10px;
+  border-radius: 4px;
 }
 </style> 

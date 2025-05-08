@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class NotificationService {
@@ -126,5 +127,17 @@ public class NotificationService {
      */
     public Integer countUnreadByReceiverId(Integer receiverId) {
         return notificationMapper.countUnreadByReceiverId(receiverId);
+    }
+    
+    public List<Notification> selectDistinctByCreatorId(Integer creatorId) {
+        return notificationMapper.selectDistinctByCreatorId(creatorId);
+    }
+    
+    public List<Map<String, Object>> selectReceiversForNotification(String title, String content, Integer activityId, Integer creatorId) {
+        return notificationMapper.selectReceiversForNotification(title, content, activityId, creatorId);
+    }
+    
+    public void update(Notification notification) {
+        notificationMapper.update(notification);
     }
 } 
