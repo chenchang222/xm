@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.ActivityInfoMapper">
+
+    <sql id="Base_Column_List">
+        id, activity_id, activity_name, num, volunteer_id, volunteer_name, qq, status, reject_reason, signed_in
+    </sql>
+
+    <select id="selectAll" resultType="org.example.entity.ActivityInfo">
+        select <include refid="Base_Column_List"/> from infomation
+        <where>
+            <if test="activityId != null">
+                and activity_id = #{activityId}
+            </if>
+            <if test="activityName != null and activityName != ''">
+                and activity_name like concat('%', #{activityName}, '%')
+            </if>
+            <if test="volunteerId != null">
+                and volunteer_id = #{volunteerId}
+            </if>
+            <if test="volunteerName != null and volunteerName != ''">
+                and volunteer_name like concat('%', #{volunteerName}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <insert id="insert" parameterType="org.example.entity.ActivityInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into infomation
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="activityId != null">activity_id,</if>
+            <if test="activityName != null">activity_name,</if>
+            <if test="num != null">num,</if>
+            <if test="volunteerId != null">volunteer_id,</if>
+            <if test="volunteerName != null">volunteer_name,</if>
+            <if test="qq != null">qq,</if>
+            <if test="status != null">status,</if>
+            <if test="rejectReason != null">reject_reason,</if>
+            <if test="signedIn != null">signed_in,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="activityId != null">#{activityId},</if>
+            <if test="activityName != null">#{activityName},</if>
+            <if test="num != null">#{num},</if>
+            <if test="volunteerId != null">#{volunteerId},</if>
+            <if test="volunteerName != null">#{volunteerName},</if>
+            <if test="qq != null">#{qq},</if>
+            <if test="status != null">#{status},</if>
+            <if test="rejectReason != null">#{rejectReason},</if>
+            <if test="signedIn != null">#{signedIn},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="org.example.entity.ActivityInfo">
+        update infomation
+        <set>
+            <if test="activityId != null">activity_id = #{activityId},</if>
+            <if test="activityName != null">activity_name = #{activityName},</if>
+            <if test="num != null">num = #{num},</if>
+            <if test="volunteerId != null">volunteer_id = #{volunteerId},</if>
+            <if test="volunteerName != null">volunteer_name = #{volunteerName},</if>
+            <if test="qq != null">qq = #{qq},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="rejectReason != null">reject_reason = #{rejectReason},</if>
+            <if test="signedIn != null">signed_in = #{signedIn},</if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper> 

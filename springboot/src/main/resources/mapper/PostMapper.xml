@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.PostMapper">
+
+    <sql id="Base_Column_List">
+        id, title, content, author_id, author_name, view_count, like_count, comment_count, created_time, updated_time
+    </sql>
+
+    <select id="selectAll" resultType="org.example.entity.Post">
+        select <include refid="Base_Column_List" /> from post
+        <where>
+            <if test="title != null and title != ''">
+                and title like concat('%', #{title}, '%')
+            </if>
+            <if test="authorId != null">
+                and author_id = #{authorId}
+            </if>
+            <if test="authorName != null and authorName != ''">
+                and author_name like concat('%', #{authorName}, '%')
+            </if>
+        </where>
+        order by created_time desc
+    </select>
+
+    <insert id="insert" parameterType="org.example.entity.Post" useGeneratedKeys="true" keyProperty="id">
+        insert into post
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="title != null">title,</if>
+            <if test="content != null">content,</if>
+            <if test="authorId != null">author_id,</if>
+            <if test="authorName != null">author_name,</if>
+            <if test="viewCount != null">view_count,</if>
+            <if test="likeCount != null">like_count,</if>
+            <if test="commentCount != null">comment_count,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="title != null">#{title},</if>
+            <if test="content != null">#{content},</if>
+            <if test="authorId != null">#{authorId},</if>
+            <if test="authorName != null">#{authorName},</if>
+            <if test="viewCount != null">#{viewCount},</if>
+            <if test="likeCount != null">#{likeCount},</if>
+            <if test="commentCount != null">#{commentCount},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="org.example.entity.Post">
+        update post
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="authorId != null">author_id = #{authorId},</if>
+            <if test="authorName != null">author_name = #{authorName},</if>
+            <if test="viewCount != null">view_count = #{viewCount},</if>
+            <if test="likeCount != null">like_count = #{likeCount},</if>
+            <if test="commentCount != null">comment_count = #{commentCount},</if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper> 

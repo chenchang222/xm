@@ -1,0 +1,420 @@
+<template>
+  <div class="container">
+    <div class="header">
+      <h2>论坛帖子管理</h2>
+      <div class="filter-container">
+        <el-input 
+          v-model="queryParams.title" 
+          placeholder="请输入标题查询" 
+          clearable 
+          @keyup.enter="getList"
+          @clear="getList"
+          style="width: 240px; margin-right: 10px;">
+          <template #prefix>
+            <el-icon><Search /></el-icon>
+          </template>
+        </el-input>
+        <el-button type="primary" @click="getList">查询</el-button>
+        <el-button @click="resetQuery">重置</el-button>
+      </div>
+    </div>
+
+    <el-table
+      v-loading="loading"
+      :data="tableData"
+      stripe
+      style="width: 100%">
+      <el-table-column prop="title" label="标题" min-width="180" show-overflow-tooltip/>
+      <el-table-column prop="volunteerName" label="发布者" width="120" v-if="false"/>
+      <el-table-column prop="viewCount" label="浏览量" width="100"/>
+      <el-table-column prop="likeCount" label="点赞数" width="100"/>
+      <el-table-column prop="commentCount" label="评论数" width="100"/>
+      <el-table-column prop="createTime" label="发布时间" width="160" v-if="false">
+        <template #default="scope">
+          {{ formatDateTime(scope.row.createTime) }}
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" fixed="right" width="150">
+        <template #default="scope">
+          <el-button 
+            type="primary" 
+            size="small" 
+            @click="viewPostDetail(scope.row)">
+            查看
+          </el-button>
+          <el-button 
+            type="danger" 
+            size="small" 
+            @click="handleDelete(scope.row.id)">
+            删除
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <div class="pagination">
+      <el-pagination
+        v-model:current-page="queryParams.pageNum"
+        v-model:page-size="queryParams.pageSize"
+        :page-sizes="[10, 20, 30, 50]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
+    </div>
+
+    <!-- 帖子详情对话框 -->
+    <el-dialog
+      v-model="detailDialogVisible"
+      title="帖子详情"
+      width="800px"
+      top="5vh"
+      :destroy-on-close="true"
+      :close-on-click-modal="false">
+      <div v-if="currentPost" class="post-detail">
+        <h3 class="post-title">{{ currentPost.title }}</h3>
+        <div class="post-meta">
+          <span v-if="false">作者: {{ currentPost.volunteerName }}</span>
+          <span v-if="false">发布时间: {{ formatDateTime(currentPost.createTime) }}</span>
+          <span>浏览量: {{ currentPost.viewCount }}</span>
+          <span>点赞数: {{ currentPost.likeCount }}</span>
+          <span>评论数: {{ currentPost.commentCount }}</span>
+        </div>
+        <div class="post-content" v-html="formatContent(currentPost.content)"></div>
+
+        <!-- 评论列表 -->
+        <div class="post-comments" v-if="comments.length > 0">
+          <h4>评论列表 ({{ comments.length }}条)</h4>
+          <div v-for="comment in comments" :key="comment.id" class="comment-item">
+            <div class="comment-header">
+              <span class="commenter-name">{{ comment.commenterName }}</span>
+              <span class="comment-time">{{ formatDateTime(comment.createTime) }}</span>
+            </div>
+            <div class="comment-content" v-html="comment.content"></div>
+            <div class="comment-actions">
+              <el-button 
+                type="danger" 
+                size="small" 
+                @click="handleDeleteComment(comment.id)">
+                删除评论
+              </el-button>
+            </div>
+          </div>
+        </div>
+        <div v-else class="no-comments">
+          暂无评论
+        </div>
+      </div>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="detailDialogVisible = false">关闭</el-button>
+          <el-button type="danger" @click="handleDeleteFromDialog">删除帖子</el-button>
+        </span>
+      </template>
+    </el-dialog>
+  </div>
+</template>
+
+<script setup>
+import { ref, reactive, onMounted } from 'vue';
+import { Search } from '@element-plus/icons-vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import request from '@/utils/request';
+
+const loading = ref(false);
+const tableData = ref([]);
+const total = ref(0);
+const detailDialogVisible = ref(false);
+const currentPost = ref(null);
+const comments = ref([]);
+
+const queryParams = reactive({
+  pageNum: 1,
+  pageSize: 10,
+  title: ''
+});
+
+// 获取帖子列表
+const getList = async () => {
+  loading.value = true;
+  try {
+    const res = await request.get('/post/selectPage', { 
+      params: queryParams 
+    });
+    if (res.code === '200') {
+      tableData.value = res.data.list || [];
+      total.value = res.data.total || 0;
+    } else {
+      ElMessage.error(res.msg || '获取帖子列表失败');
+    }
+  } catch (error) {
+    console.error('获取帖子列表失败', error);
+    ElMessage.error('获取帖子列表失败');
+  } finally {
+    loading.value = false;
+  }
+};
+
+// 重置查询条件
+const resetQuery = () => {
+  queryParams.title = '';
+  getList();
+};
+
+// 格式化日期时间
+const formatDateTime = (dateTimeStr) => {
+  if (!dateTimeStr) return '';
+  const date = new Date(dateTimeStr);
+  return date.toLocaleString('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).replace(/\//g, '-');
+};
+
+// 格式化帖子内容，将换行符转换为HTML
+const formatContent = (content) => {
+  if (!content) return '';
+  return content.replace(/\n/g, '<br>');
+};
+
+const handleSizeChange = (size) => {
+  queryParams.pageSize = size;
+  getList();
+};
+
+const handleCurrentChange = (page) => {
+  queryParams.pageNum = page;
+  getList();
+};
+
+// 查看帖子详情
+const viewPostDetail = async (row) => {
+  currentPost.value = { ...row };
+  detailDialogVisible.value = true;
+  
+  // 加载评论 - 修正API路径
+  try {
+    const res = await request.get(`/postComment/selectByPostId/${row.id}`);
+    if (res.code === '200') {
+      comments.value = res.data || [];
+    } else {
+      comments.value = [];
+      ElMessage.warning('获取评论失败');
+    }
+  } catch (error) {
+    console.error('获取评论失败', error);
+    comments.value = [];
+  }
+};
+
+// 删除帖子
+const handleDelete = (id) => {
+  ElMessageBox.confirm(
+    '确定要删除该帖子吗？此操作将同时删除所有相关评论，不可逆',
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  ).then(async () => {
+    try {
+      const res = await request.delete(`/post/deleteById/${id}`);
+      if (res.code === '200') {
+        ElMessage.success('删除成功');
+        getList();
+      } else {
+        ElMessage.error(res.msg || '删除失败');
+      }
+    } catch (error) {
+      console.error('删除失败', error);
+      ElMessage.error('删除失败');
+    }
+  }).catch(() => {});
+};
+
+// 在对话框中删除
+const handleDeleteFromDialog = () => {
+  if (currentPost.value) {
+    handleDelete(currentPost.value.id);
+    detailDialogVisible.value = false;
+  }
+};
+
+// 删除评论
+const handleDeleteComment = (id) => {
+  ElMessageBox.confirm(
+    '确定要删除该评论吗？',
+    '提示',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    }
+  ).then(async () => {
+    try {
+      // 修正删除评论的API路径
+      const res = await request.delete(`/postComment/deleteById/${id}`);
+      if (res.code === '200') {
+        ElMessage.success('删除评论成功');
+        // 刷新评论列表
+        if (currentPost.value) {
+          const commentsRes = await request.get(`/postComment/selectByPostId/${currentPost.value.id}`);
+          if (commentsRes.code === '200') {
+            comments.value = commentsRes.data || [];
+            // 更新当前帖子的评论数
+            currentPost.value.commentCount = comments.value.length;
+          }
+        }
+      } else {
+        ElMessage.error(res.msg || '删除评论失败');
+      }
+    } catch (error) {
+      console.error('删除评论失败', error);
+      ElMessage.error('删除评论失败');
+    }
+  }).catch(() => {});
+};
+
+onMounted(() => {
+  getList();
+});
+</script>
+
+<style scoped>
+.container {
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.post-detail {
+  padding: 0 10px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.post-title {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #303133;
+  font-weight: bold;
+  word-break: break-all;
+}
+
+.post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  font-size: 14px;
+  color: #909399;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.post-content {
+  padding: 15px;
+  background-color: #f5f7fa;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  min-height: 100px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.post-content :deep(img) {
+  max-width: 100%;
+  height: auto;
+}
+
+.post-comments {
+  margin-top: 20px;
+}
+
+.post-comments h4 {
+  font-size: 16px;
+  margin-bottom: 15px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #ebeef5;
+}
+
+.comment-item {
+  padding: 12px;
+  border-bottom: 1px dashed #ebeef5;
+  margin-bottom: 12px;
+  background-color: #fafafa;
+  border-radius: 4px;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.commenter-name {
+  font-weight: bold;
+  color: #409EFF;
+}
+
+.comment-time {
+  color: #909399;
+}
+
+.comment-content {
+  margin: 10px 0;
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #f7f7f7;
+  line-height: 1.6;
+  white-space: normal;
+}
+
+.comment-content :deep(img) {
+  max-width: 100%;
+  height: auto;
+}
+
+.comment-content :deep(p) {
+  margin: 0.5em 0;
+}
+
+.comment-actions {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.no-comments {
+  text-align: center;
+  color: #909399;
+  font-size: 14px;
+  padding: 20px 0;
+}
+</style> 

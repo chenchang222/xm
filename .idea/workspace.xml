@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="409b8c01-2bd6-4cde-a671-893db70d0281" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Options API Component" />
+        <option value="Class" />
+        <option value="Interface" />
+      </list>
+    </option>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="customMavenHome" value="D:\about code\maven\apache-maven-3.6.2" />
+        <option name="localRepository" value="D:\about code\maven\apache-maven-3.6.2\repo" />
+        <option name="mavenHomeTypeForPersistence" value="CUSTOM" />
+        <option name="userSettingsFile" value="D:\about code\maven\apache-maven-3.6.2\conf\settings.xml" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2uIaeJVxrGYRQZnZeQDR6gy7wPR" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Maven.spingboot [clean].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.SpringbootApplication.executor": "Run",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Chanel/桌面/xm",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.dev.executor": "Run",
+    "project.structure.last.edited": "Project",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "database.query.execution",
+    "ts.external.directory.path": "D:\\Program Files\\JetBrains\\IntelliJ IDEA 2024.3.5\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
+    "vue.rearranger.settings.migration": "true",
+    "应用程序.SpingbootApplication.executor": "Run",
+    "应用程序.SpringbootApplication.executor": "Run"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "mysql"
+    ],
+    "RunConfigurationTargetLRU": [
+      "c673395d-44b0-47ce-b480-1a9cff8548b0"
+    ],
+    "vue.recent.templates": [
+      "Vue Options API Component"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="org.example.mapper" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\about code\spv\xm\vue\src\views" />
+      <recent name="D:\about code\spv\xm\spingboot\src\main\resources\mapper" />
+      <recent name="D:\about code\spv\xm\vue\src\assets" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\about code\spv\xm\vue\src\views" />
+      <recent name="D:\about code\spv\xm\vue\src" />
+      <recent name="D:\about code\spv\xm\vue\src\components" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="org.example.service" />
+      <recent name="org.example.mapper" />
+      <recent name="org.example.controller" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.SpringbootApplication">
+    <configuration name="SpringbootApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="org.example.SpringbootApplication" />
+      <module name="spingboot" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="xm.sql" type="DatabaseScript" editBeforeRun="true" temporary="true">
+      <script-file value="$PROJECT_DIR$/xm.sql" />
+      <script-mode>FILE</script-mode>
+      <method v="2" />
+    </configuration>
+    <configuration name="SpringbootApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="ALTERNATIVE_JRE_PATH" value="corretto-17" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <module name="spingboot" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.SpringbootApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/vue/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="npm.dev" />
+      <item itemvalue="Spring Boot.SpringbootApplication" />
+      <item itemvalue="应用程序.SpringbootApplication" />
+      <item itemvalue="数据库脚本.xm.sql" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.dev" />
+        <item itemvalue="数据库脚本.xm.sql" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="409b8c01-2bd6-4cde-a671-893db70d0281" name="Default Changelist" comment="" />
+      <created>1742547541486</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1742547541486</updated>
+      <workItem from="1742547545259" duration="1311000" />
+      <workItem from="1743006494784" duration="920000" />
+      <workItem from="1743060797888" duration="4238000" />
+      <workItem from="1743269277073" duration="312000" />
+      <workItem from="1743270880334" duration="19000" />
+      <workItem from="1743270915379" duration="21000" />
+      <workItem from="1743270944813" duration="174000" />
+      <workItem from="1743271128575" duration="4263000" />
+      <workItem from="1743343237709" duration="1442000" />
+      <workItem from="1743434804924" duration="3639000" />
+      <workItem from="1743624441110" duration="2433000" />
+      <workItem from="1743695156058" duration="2196000" />
+      <workItem from="1743959452677" duration="4338000" />
+      <workItem from="1744009914907" duration="85000" />
+      <workItem from="1744015252870" duration="11158000" />
+      <workItem from="1744091331288" duration="10682000" />
+      <workItem from="1744137446012" duration="596000" />
+      <workItem from="1744224700319" duration="354000" />
+      <workItem from="1744231237727" duration="17016000" />
+      <workItem from="1744256042556" duration="22521000" />
+      <workItem from="1744313769930" duration="449000" />
+      <workItem from="1744314237437" duration="153000" />
+      <workItem from="1744314405944" duration="313000" />
+      <workItem from="1744314732910" duration="122000" />
+      <workItem from="1744345189242" duration="2899000" />
+      <workItem from="1744348220629" duration="39935000" />
+      <workItem from="1744389502580" duration="32318000" />
+      <workItem from="1744423119760" duration="327000" />
+      <workItem from="1744424512821" duration="2950000" />
+      <workItem from="1745950602930" duration="1699000" />
+      <workItem from="1746470842745" duration="596000" />
+      <workItem from="1746478081471" duration="1314000" />
+      <workItem from="1746518954552" duration="348000" />
+      <workItem from="1746549107909" duration="9155000" />
+      <workItem from="1746589366000" duration="520000" />
+      <workItem from="1746619801092" duration="922000" />
+      <workItem from="1746699814480" duration="8061000" />
+      <workItem from="1746720091373" duration="2822000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

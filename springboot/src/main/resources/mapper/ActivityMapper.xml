@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.mapper.ActivityMapper">
+
+    <sql id="Base_Column_List">
+        id, type, location, title, description, start_Time, end_Time, status
+    </sql>
+
+    <select id="selectAll" resultType="org.example.entity.Activity">
+        select <include refid="Base_Column_List"/> from activity
+        <where>
+            <if test="type != null and type != ''">
+                and type like concat('%', #{type}, '%')
+            </if>
+            <if test="title != null and title != ''">
+                and title like concat('%', #{title}, '%')
+            </if>
+            <if test="location != null and location != ''">
+                and location like concat('%', #{location}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                and status = #{status}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <insert id="insert" parameterType="org.example.entity.Activity" useGeneratedKeys="true" keyProperty="id">
+        insert into activity
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="type != null">type,</if>
+            <if test="location != null">location,</if>
+            <if test="title != null">title,</if>
+            <if test="description != null">description,</if>
+            <if test="startTime != null">start_Time,</if>
+            <if test="endTime != null">end_Time,</if>
+            <if test="status != null">status,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="type != null">#{type},</if>
+            <if test="location != null">#{location},</if>
+            <if test="title != null">#{title},</if>
+            <if test="description != null">#{description},</if>
+            <if test="startTime != null">#{startTime},</if>
+            <if test="endTime != null">#{endTime},</if>
+            <if test="status != null">#{status},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="org.example.entity.Activity">
+        update activity
+        <set>
+            <if test="type != null">type = #{type},</if>
+            <if test="location != null">location = #{location},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="description != null">description = #{description},</if>
+            <if test="startTime != null">start_Time = #{startTime},</if>
+            <if test="endTime != null">end_Time = #{endTime},</if>
+            <if test="status != null">status = #{status},</if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper> 
