@@ -112,16 +112,18 @@ const loadActivities = async () => {
 
 // 处理活动点击事件
 const handleActivityClick = (activity) => {
+  // 从localStorage获取用户信息
+  const user = JSON.parse(localStorage.getItem('xm-user') || '{}');
+  
   // 根据用户角色跳转到不同页面
-  if (userStore.role === 'VOL') {
-    // 志愿者跳转到活动报名页面
+  if (user.role === 'VOL') {
+    // 志愿者直接跳转到活动报名页面
     router.push({
       path: '/manager/activitySignUp',
       query: {
-        id: activity.id,
-        title: activity.title
+        activityId: activity.id
       }
-    })
+    });
   } else {
     // 管理员跳转到活动管理页面
     router.push({
@@ -130,7 +132,7 @@ const handleActivityClick = (activity) => {
         id: activity.id,
         title: activity.title
       }
-    })
+    });
   }
 }
 

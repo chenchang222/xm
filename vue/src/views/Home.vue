@@ -17,6 +17,10 @@
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
 // 新增图片路径处理方法
 const getImageUrl = (index: number) => {
   // 使用静态import方式引入图片，确保兼容性
@@ -25,11 +29,13 @@ const getImageUrl = (index: number) => {
 
 // 新增点击跳转逻辑
 const handleActivityClick = (index: number) => {
-  const userRole = localStorage.getItem('userRole') // 假设用户角色存储在localStorage中
-  if (userRole === 'VOL') {
-    window.location.href = 'http://localhost:5173/manager/activitySignUp'
+  // 从localStorage获取用户信息
+  const user = JSON.parse(localStorage.getItem('xm-user') || '{}');
+  
+  if (user.role === 'VOL') {
+    router.push('/manager/activitySignUp');
   } else {
-    window.location.href = 'http://localhost:5173/manager/activity'
+    router.push('/manager/activity');
   }
 }
 </script>

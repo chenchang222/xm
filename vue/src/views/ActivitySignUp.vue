@@ -19,21 +19,25 @@
           <el-table-column label="开始时间" prop="startTime"/>
           <el-table-column label="结束时间" prop="endTime"/>
           <el-table-column label="状态" prop="status"/>
-          <el-table-column label="操作">
+          <el-table-column label="操作" width="220" align="center">
             <template #default="scope">
-              <el-button 
-                @click="handleSignUp(scope.row)" 
-                type="primary" 
-                :icon="Plus"
-                :disabled="isAlreadySignedUp(scope.row.id)">
-                {{ isAlreadySignedUp(scope.row.id) ? '已报名' : '报名' }}
-              </el-button>
-              <el-button 
-                @click="handleToggleFavorite(scope.row)" 
-                :type="isFavorite(scope.row.id) ? 'danger' : 'info'" 
-                :icon="isFavorite(scope.row.id) ? Star : StarFilled">
-                {{ isFavorite(scope.row.id) ? '取消收藏' : '收藏' }}
-              </el-button>
+              <div class="button-group">
+                <el-button 
+                  @click="handleSignUp(scope.row)" 
+                  type="primary" 
+                  :icon="isAlreadySignedUp(scope.row.id) ? Check : Plus"
+                  size="small"
+                  :disabled="isAlreadySignedUp(scope.row.id)">
+                  {{ isAlreadySignedUp(scope.row.id) ? '已报名' : '报名' }}
+                </el-button>
+                <el-button 
+                  @click="handleToggleFavorite(scope.row)" 
+                  :type="isFavorite(scope.row.id) ? 'danger' : 'info'" 
+                  :icon="isFavorite(scope.row.id) ? Star : StarFilled"
+                  size="small">
+                  {{ isFavorite(scope.row.id) ? '取消收藏' : '收藏' }}
+                </el-button>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -418,5 +422,23 @@ onMounted(() => {
   padding: 10px;
   background-color: white;
   border-radius: 4px;
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.button-group .el-button {
+  margin: 0;
+  flex: 1;
+  min-width: 80px;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style> 
