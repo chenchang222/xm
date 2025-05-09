@@ -4,7 +4,7 @@ public class Volunteer extends Account{
     private Integer id;
     private String username;
     private String password;
-    private String role;
+    private String role = "VOL";
     private String name;
     private String sex;
     private String no;
