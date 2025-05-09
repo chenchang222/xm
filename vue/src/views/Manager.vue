@@ -48,7 +48,7 @@
           </template>
           <el-menu-item index="/manager/activity" v-if="data.user.role === 'EMP'">
             <el-icon><Calendar /></el-icon>
-            活动管理
+            活动信息管理
           </el-menu-item>
           <el-menu-item index="/manager/activitySignUp" v-if="data.user.role === 'VOL'">
             <el-icon><Edit /></el-icon>
