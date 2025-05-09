@@ -12,12 +12,18 @@
           <el-icon :size="22"><Bell /></el-icon>
         </el-badge>
       </div>
-      <img
-          src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-          style="width: 40px; height: 40px; margin-left: 15px;"
-          alt="avatar"
-      >
-      <span style="color: white; margin-left: 5px">{{ data.user.name }}</span>
+      <div style="display: flex; align-items: center; margin-left: 15px;">
+        <img
+            @click="goToPersonInfo"
+            src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+            style="width: 40px; height: 40px;"
+            alt="avatar"
+        >
+        <span 
+            @click="goToPersonInfo"
+            style="color: white; margin-left: 5px; cursor: pointer;"
+        >{{ data.user.name }}</span>
+      </div>
     </div>
   </div>
 
@@ -191,6 +197,14 @@ const goToMessageCenter = () => {
   router.push('/manager/messageCenter');
 }
 
+const goToPersonInfo = () => {
+  if (data.user.role === 'VOL') {
+    router.push('/manager/person');
+  } else if (data.user.role === 'EMP') {
+    router.push('/manager/employee');
+  }
+}
+
 const getUnreadCount = async () => {
   if (!data.user || !data.user.id) return;
   
@@ -238,5 +252,15 @@ onMounted(() => {
 
 .message-badge {
   color: white;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  transition: opacity 0.3s;
+}
+
+.user-info:hover {
+  opacity: 0.8;
 }
 </style>
